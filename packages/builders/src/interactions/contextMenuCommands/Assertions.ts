@@ -1,12 +1,12 @@
 import { s } from '@sapphire/shapeshift';
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
-	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+	// eslint-disable-next-line prefer-named-capture-group
 	.regex(/^( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}]+ *)+$/u)
 	.setValidationEnabled(isValidationEnabled);
 const typePredicate = s
@@ -49,3 +49,11 @@ const memberPermissionPredicate = s.union(
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);
 }
+
+export const contextsPredicate = s.array(
+	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
+);
+
+export const integrationTypesPredicate = s.array(
+	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
+);
